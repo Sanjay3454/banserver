@@ -112,3 +112,15 @@ steps
 
 
 
+asynchronous method handling in javascript 
+-------------------------------------------
+
+promise  - resolve   then()
+        - reject     catch()
+
+
+CORS (cross orgin resource sharing)        
+------------------------------------
+
+library used to integrate frontend with node 
+4200-3000 

@@ -2,6 +2,11 @@
 
 const express = require("express");
 
+//import cors
+const cors=require("cors")
+
+
+
 //import ds
 const ds = require("./service/dataservice");
 
@@ -13,6 +18,10 @@ const jwt = require("jsonwebtoken")
 
 //app creation
 const app = express();
+
+//integrate app with frontend
+app.use(cors({origin:"http://localhost:4200"}))
+
 
 //to covert all datas json to js
 
@@ -67,39 +76,56 @@ const jwtMiddleware = (req, res, next) => {
 //register post
 
 app.post("/register", (req, res) => {
-  const result = ds.register(req.body.acno, req.body.uname, req.body.psw);
-  res.status(result.statuscode).json(result);
+ ds.register(req.body.acno, req.body.uname, req.body.psw).then(result=>{
+  res.status(result.statuscode).json(result)
+ })
+
   // console.log(req.body);
   // res.send("work")
 });
 
 app.post("/login", (req, res) => {
-  const result = ds.login(req.body.acno, req.body.psw);
-  res.status(result.statuscode).json(result);
+  ds.login(req.body.acno, req.body.psw).then(result=>{
+    res.status(result.statuscode).json(result);
+  });
+ 
   // console.log(req.body);
   // res.send("work")
 });
 
 app.post("/deposit",jwtMiddleware,(req, res) => {
-  const result = ds.deposit(req.body.acno, req.body.psw, req.body.amnt);
+ ds.deposit(req.body.acno, req.body.psw, req.body.amnt).then(result=>{
   res.status(result.statuscode).json(result);
+
+ });
+ 
   // console.log(req.body);
   // res.send("work")
 });
 
 app.post("/withdraw", jwtMiddleware, (req, res) => {
-  const result = ds.withdraw(req.body.acno, req.body.psw, req.body.amnt);
-  res.status(result.statuscode).json(result);
+ds.withdraw(req.body.acno, req.body.psw, req.body.amnt).then(result=>{
+    res.status(result.statuscode).json(result);
+  });
+  
   // console.log(req.body);
   // res.send("work")
 });
 
-app.get("/transaction",jwtMiddleware, (req, res) => {
-  const result = ds.getTransaction(req.body.acno);
-  res.status(result.statuscode).json(result);
+app.post("/transaction",jwtMiddleware, (req, res) => {
+   ds.getTransaction(req.body.acno).then(result=>{
+    res.status(result.statuscode).json(result);
+  });
+  // res.status(result.statuscode).json(result);
   // console.log(req.body);
   // res.send("work")
 });
+
+app.delete("/delete/:acno",jwtMiddleware,(req,res)=>{
+  ds.deleteAcc(req.params.acno).then(result=>{
+    res.status(result.statuscode).json(result);
+})
+})
 
 //register post
 //login get
